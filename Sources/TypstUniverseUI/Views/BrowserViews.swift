@@ -110,12 +110,15 @@ public struct TypstUniverseBrowserView: View {
 
 public struct TemplatePickerSheet: View {
     @State private var model: UniverseBrowserModel
+    private let client: TypstUniverseClient
     private var initialCategory: UniverseCategory?
     private var destinationProvider: (PackageSpec) -> URL
     private var onDone: (ScaffoldedTemplateProject) -> Void
     @Environment(\.dismiss) private var dismiss
     @Environment(\.onTemplateScaffoldedKey) private var onScaffolded
     @State private var progress: Double?
+    @State private var isWorking = false
+    @State private var errorMessage: String?
 
     public init(
         client: TypstUniverseClient,
@@ -124,6 +127,7 @@ public struct TemplatePickerSheet: View {
         onScaffolded done: @escaping (ScaffoldedTemplateProject) -> Void
     ) {
         _model = State(initialValue: UniverseBrowserModel(client: client))
+        self.client = client
         self.initialCategory = initialCategory
         self.destinationProvider = destinationProvider
         self.onDone = done
@@ -137,9 +141,21 @@ public struct TemplatePickerSheet: View {
                         Button("Cancel") { dismiss() }
                     }
                     ToolbarItem(placement: .primaryAction) {
-                        Button("Use Template") { Task { await useSelected() } }
-                            .disabled(model.selected == nil)
+                        if isWorking {
+                            ProgressView().accessibilityLabel("Scaffolding template")
+                        } else {
+                            Button("Use Template") { Task { await useSelected() } }
+                                .disabled(model.selected == nil)
+                        }
                     }
+                }
+                .alert("Couldn't create the project", isPresented: Binding(
+                    get: { errorMessage != nil },
+                    set: { if !$0 { errorMessage = nil } }
+                )) {
+                    Button("OK", role: .cancel) {}
+                } message: {
+                    Text(errorMessage ?? "")
                 }
         }
         .onAppear {
@@ -155,10 +171,17 @@ public struct TemplatePickerSheet: View {
     private func useSelected() async {
         guard let pkg = model.selected, let version = model.selectedVersion ?? pkg.latestVersion else { return }
         let spec = PackageSpec(namespace: pkg.namespace, name: pkg.name, version: version.version)
-        // Scaffold via shared client through a fresh fetch path is owned by host;
-        // here we surface selection and let host scaffold, to keep sheet testable.
-        // For the turnkey path, hosts typically call client.scaffoldTemplate themselves.
-        _ = destinationProvider(spec)
-        progress = 1
+        isWorking = true
+        defer { isWorking = false }
+        do {
+            let project = try await client.scaffoldTemplate(spec, to: destinationProvider(spec))
+            progress = 1
+            onScaffolded?(project)
+            onDone(project)
+        } catch let error as TypstUniverseError {
+            errorMessage = error.errorDescription ?? "Something went wrong."
+        } catch {
+            errorMessage = String(describing: error)
+        }
     }
 }
