@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-label="TypstUniverseKit — native Swift for the Typst Universe">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f1033"/>
+      <stop offset="0.45" stop-color="#2e1a5e"/>
+      <stop offset="0.75" stop-color="#5b21b6"/>
+      <stop offset="1" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="docHeader" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8b5cf6"/>
+      <stop offset="1" stop-color="#6d28d9"/>
+    </linearGradient>
+    <linearGradient id="amberCard" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbbf24"/>
+      <stop offset="1" stop-color="#f97316"/>
+    </linearGradient>
+    <linearGradient id="tealCard" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2dd4bf"/>
+      <stop offset="1" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <linearGradient id="logoMark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2dd4bf"/>
+      <stop offset="1" stop-color="#a78bfa"/>
+    </linearGradient>
+    <filter id="soft" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="45"/>
+    </filter>
+    <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse">
+      <path d="M 44 0 L 0 0 0 44" fill="none" stroke="#ffffff" stroke-opacity="0.07" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <!-- backdrop -->
+  <rect x="0" y="0" width="1200" height="420" rx="28" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1200" height="420" rx="28" fill="url(#grid)"/>
+  <ellipse cx="1020" cy="60" rx="220" ry="130" fill="#2dd4bf" opacity="0.22" filter="url(#soft)"/>
+  <ellipse cx="180" cy="400" rx="240" ry="130" fill="#f472b6" opacity="0.18" filter="url(#soft)"/>
+
+  <!-- gallery cards, right side -->
+  <g>
+    <rect x="748" y="196" width="230" height="132" rx="14" fill="url(#amberCard)" opacity="0.92" transform="rotate(-8 863 262)"/>
+    <rect x="762" y="210" width="120" height="10" rx="5" fill="#ffffff" opacity="0.85" transform="rotate(-8 863 262)"/>
+    <rect x="762" y="228" width="180" height="8" rx="4" fill="#ffffff" opacity="0.55" transform="rotate(-8 863 262)"/>
+    <rect x="762" y="244" width="150" height="8" rx="4" fill="#ffffff" opacity="0.55" transform="rotate(-8 863 262)"/>
+    <rect x="762" y="268" width="70" height="34" rx="8" fill="#ffffff" opacity="0.9" transform="rotate(-8 863 262)"/>
+
+    <rect x="1052" y="222" width="150" height="96" rx="12" fill="url(#tealCard)" opacity="0.92" transform="rotate(7 1127 270)"/>
+    <circle cx="1090" cy="254" r="14" fill="#ffffff" opacity="0.9" transform="rotate(7 1127 270)"/>
+    <rect x="1112" y="248" width="66" height="8" rx="4" fill="#ffffff" opacity="0.7" transform="rotate(7 1127 270)"/>
+    <rect x="1112" y="262" width="48" height="8" rx="4" fill="#ffffff" opacity="0.5" transform="rotate(7 1127 270)"/>
+
+    <!-- main document -->
+    <g transform="rotate(4 990 210)">
+      <rect x="890" y="70" width="200" height="280" rx="14" fill="#ffffff"/>
+      <rect x="890" y="70" width="200" height="280" rx="14" fill="none" stroke="#ffffff" stroke-opacity="0.4" stroke-width="2"/>
+      <rect x="890" y="70" width="200" height="58" rx="14" fill="url(#docHeader)"/>
+      <rect x="890" y="100" width="200" height="28" fill="url(#docHeader)"/>
+      <rect x="906" y="88" width="110" height="12" rx="6" fill="#ffffff" opacity="0.95"/>
+      <rect x="906" y="106" width="76" height="8" rx="4" fill="#ffffff" opacity="0.6"/>
+      <rect x="906" y="142" width="168" height="64" rx="8" fill="url(#tealCard)" opacity="0.9"/>
+      <circle cx="936" cy="166" r="12" fill="#ffffff" opacity="0.9"/>
+      <rect x="956" y="160" width="90" height="8" rx="4" fill="#ffffff" opacity="0.7"/>
+      <rect x="956" y="174" width="64" height="8" rx="4" fill="#ffffff" opacity="0.5"/>
+      <rect x="906" y="220" width="168" height="9" rx="4.5" fill="#c7d2fe"/>
+      <rect x="906" y="237" width="168" height="9" rx="4.5" fill="#e0e7ff"/>
+      <rect x="906" y="254" width="120" height="9" rx="4.5" fill="#e0e7ff"/>
+      <rect x="906" y="276" width="168" height="9" rx="4.5" fill="#e0e7ff"/>
+      <rect x="906" y="293" width="90" height="9" rx="4.5" fill="#c7d2fe"/>
+      <rect x="906" y="312" width="60" height="20" rx="10" fill="#ede9fe"/>
+    </g>
+  </g>
+
+  <!-- wordmark -->
+  <g font-family="-apple-system, 'SF Pro Display', 'Segoe UI', Helvetica, Arial, sans-serif">
+    <rect x="70" y="48" width="54" height="54" rx="15" fill="url(#logoMark)"/>
+    <text x="97" y="86" text-anchor="middle" font-size="30" font-weight="800" fill="#0f1033">Ty</text>
+
+    <text x="70" y="178" font-size="66" font-weight="800" fill="#ffffff" letter-spacing="-1">TypstUniverseKit</text>
+    <text x="72" y="226" font-size="27" font-weight="400" fill="#e0e7ff">Native Swift for the Typst Universe.</text>
+
+    <!-- feature pills -->
+    <g font-size="20" font-weight="600" fill="#ffffff">
+      <rect x="70" y="258" width="182" height="42" rx="21" fill="#ffffff" opacity="0.14"/>
+      <text x="161" y="286" text-anchor="middle">Offline-first</text>
+      <rect x="264" y="258" width="222" height="42" rx="21" fill="#ffffff" opacity="0.14"/>
+      <text x="375" y="286" text-anchor="middle">Zero dependencies</text>
+      <rect x="498" y="258" width="222" height="42" rx="21" fill="#ffffff" opacity="0.14"/>
+      <text x="609" y="286" text-anchor="middle">Secure by default</text>
+    </g>
+
+    <text x="70" y="352" font-size="20" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" fill="#c7d2fe" opacity="0.9">packages.typst.org  →  your app</text>
+  </g>
+</svg>
