@@ -14,6 +14,11 @@ let package = Package(
         .library(name: "TypstUniverseUI", targets: ["TypstUniverseUI"]),
         .library(name: "TypstUniverseKit", targets: ["TypstUniverseCore", "TypstUniverseStorage", "TypstUniverseUI"])
     ],
+    dependencies: [
+        // Build-time only: powers `swift package generate-documentation`.
+        // Never linked into library products.
+        .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0")
+    ],
     targets: [
         .target(
             name: "TypstUniverseCore",
