@@ -6,7 +6,7 @@ on:
     - cron: "0 6 * * *"
 jobs:
   build-test-macos:
-    runs-on: macos-15
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
       - uses: swift-actions/setup-swift@v2
@@ -20,7 +20,7 @@ jobs:
       - run: swift build --target TypstUniverseCore
       - run: swift test --filter TypstUniverseCoreTests
   docs:
-    runs-on: macos-15
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
       - run: swift package --allow-writing-to-directory ./docs generate-documentation --target TypstUniverseCore --output-path ./docs
