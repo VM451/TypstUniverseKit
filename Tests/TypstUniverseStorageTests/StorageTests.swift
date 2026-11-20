@@ -50,6 +50,33 @@ struct SecureTarTests {
         #expect(throws: TypstUniverseError.self) { try SecureTarGzExtractor.extractTar(tar) }
     }
 
+    @Test func skipsDotRootEntry() throws {
+        // Registry tarballs (e.g. benplate 0.2.0) start with a bare `.`
+        // root directory entry: it must not abort the whole archive.
+        let five: UInt8 = UInt8(ascii: "5")
+        let tar = makeTar([(".", Data(), five), ("pkg/lib.typ", Data("hello".utf8), UInt8(ascii: "0"))])
+        let entries = try SecureTarGzExtractor.extractTar(tar)
+        #expect(entries.count == 1)
+        #expect(entries[0].path == "pkg/lib.typ")
+    }
+
+    @Test func normalizesDotSlashPrefix() throws {
+        let tar = makeTar([("./pkg/lib.typ", Data("hello".utf8), UInt8(ascii: "0"))])
+        let entries = try SecureTarGzExtractor.extractTar(tar)
+        #expect(entries.map(\.path) == ["pkg/lib.typ"])
+    }
+
+    @Test func collapsesInnerDotDot() throws {
+        let tar = makeTar([("pkg/sub/../lib.typ", Data("hello".utf8), UInt8(ascii: "0"))])
+        let entries = try SecureTarGzExtractor.extractTar(tar)
+        #expect(entries.map(\.path) == ["pkg/lib.typ"])
+    }
+
+    @Test func rejectsDotDotEscapeMidPath() {
+        let tar = makeTar([("pkg/../../etc/passwd", Data("x".utf8), UInt8(ascii: "0"))])
+        #expect(throws: TypstUniverseError.self) { try SecureTarGzExtractor.extractTar(tar) }
+    }
+
     @Test func rejectsAbsolute() {
         let tar = makeTar([("/etc/passwd", Data("x".utf8), UInt8(ascii: "0"))])
         #expect(throws: TypstUniverseError.self) { try SecureTarGzExtractor.extractTar(tar) }

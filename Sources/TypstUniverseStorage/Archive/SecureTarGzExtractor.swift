@@ -90,17 +90,24 @@ public enum SecureTarGzExtractor {
 
             switch typeflag {
             case 0, UInt8(ascii: "0"), UInt8(ascii: " "):
-                try validatePath(entryName, limits: limits)
+                // Benign `./` prefixes and doubled slashes are normalized
+                // away; a bare `.` root entry reduces to nothing and is
+                // skipped (registry tarballs routinely start with one).
+                // Genuine traversal (`..` escaping the root, absolute
+                // paths) still aborts the whole archive.
+                guard let clean = try sanitizedPath(entryName, limits: limits) else { continue }
                 totalBytes += fileData.count
                 guard totalBytes <= limits.maxUncompressedBytes else {
                     throw TypstUniverseError.archiveTooLarge(limit: limits.maxUncompressedBytes)
                 }
-                entries.append(ExtractedEntry(path: entryName, data: fileData, isExecutable: false))
+                entries.append(ExtractedEntry(path: clean, data: fileData, isExecutable: false))
                 if entries.count > limits.maxFileCount {
                     throw TypstUniverseError.archiveEntryLimitExceeded(limit: limits.maxFileCount)
                 }
             case UInt8(ascii: "5"):
-                try validatePath(entryName, limits: limits) // directory: ensure safe, no data
+                // Directory: ensure safe, no data. A normalized-away root
+                // (`.` / `./`) is not materialized.
+                guard (try sanitizedPath(entryName, limits: limits)) != nil else { continue }
             case UInt8(ascii: "1"), UInt8(ascii: "2"), UInt8(ascii: "K"), UInt8(ascii: "x"), UInt8(ascii: "g"):
                 throw TypstUniverseError.archiveSecurityViolation(reason: "link/pax entry rejected: \(entryName)")
             default:
@@ -116,22 +123,45 @@ public enum SecureTarGzExtractor {
     }
 
     static func validatePath(_ path: String, limits: ExtractionLimits) throws {
+        // Kept for callers that only need a boolean gate; extraction
+        // itself goes through `sanitizedPath` (nil = skippable root).
+        _ = try sanitizedPath(path, limits: limits)
+    }
+
+    /// Lexically normalizes a tar entry path and returns the safe
+    /// relative path, or nil when the entry reduces to the archive root
+    /// itself (`.` / `./`), which carries nothing to extract. `.` and
+    /// empty (doubled-slash) components are benign and dropped; `..`
+    /// that would escape the root, absolute paths, null bytes,
+    /// backslashes, and drive letters abort the whole archive.
+    static func sanitizedPath(_ path: String, limits: ExtractionLimits) throws -> String? {
         guard !path.isEmpty else { throw TypstUniverseError.archiveSecurityViolation(reason: "empty entry name") }
         guard !path.contains("\0") else { throw TypstUniverseError.archiveSecurityViolation(reason: "null byte in path") }
         guard !path.hasPrefix("/") else { throw TypstUniverseError.archiveSecurityViolation(reason: "absolute path: \(path)") }
         guard path.count <= limits.maxPathLength else { throw TypstUniverseError.archiveSecurityViolation(reason: "path too long") }
         let trimmed = path.hasSuffix("/") ? String(path.dropLast()) : path
-        let parts = trimmed.split(separator: "/", omittingEmptySubsequences: false).map(String.init)
-        guard parts.count <= limits.maxPathDepth + 1 else { throw TypstUniverseError.archiveSecurityViolation(reason: "path too deep: \(path)") }
-        for p in parts {
-            if p == ".." || p == "." { throw TypstUniverseError.archiveSecurityViolation(reason: "dot component in \(path)") }
-            if p.isEmpty { throw TypstUniverseError.archiveSecurityViolation(reason: "empty component in \(path)") }
+        var out: [String] = []
+        for raw in trimmed.split(separator: "/", omittingEmptySubsequences: false) {
+            let part = String(raw)
+            if part.isEmpty || part == "." { continue }
+            if part == ".." {
+                guard !out.isEmpty else {
+                    throw TypstUniverseError.archiveSecurityViolation(reason: "path escapes archive root: \(path)")
+                }
+                out.removeLast()
+            } else {
+                out.append(part)
+            }
         }
-        // Windows drive / backslash escapes.
-        if path.contains("\\") { throw TypstUniverseError.archiveSecurityViolation(reason: "backslash in \(path)") }
-        if path.range(of: "^[A-Za-z]:", options: .regularExpression) != nil {
+        guard !out.isEmpty else { return nil }
+        guard out.count <= limits.maxPathDepth + 1 else { throw TypstUniverseError.archiveSecurityViolation(reason: "path too deep: \(path)") }
+        // Windows drive / backslash escapes (checked post-normalization).
+        let clean = out.joined(separator: "/")
+        if clean.contains("\\") { throw TypstUniverseError.archiveSecurityViolation(reason: "backslash in \(path)") }
+        if clean.range(of: "^[A-Za-z]:", options: .regularExpression) != nil {
             throw TypstUniverseError.archiveSecurityViolation(reason: "drive-letter path: \(path)")
         }
+        return clean
     }
 
     private static func cString(_ data: Data, _ off: Int, _ len: Int) -> String? {
