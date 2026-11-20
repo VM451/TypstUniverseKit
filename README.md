@@ -34,7 +34,7 @@
 | **Headless** | `TypstUniverseCore` + `TypstUniverseStorage` | Custom editors, IDE builders, server-side Swift, enterprise tooling |
 | **Turnkey UI** | + `TypstUniverseUI` | Any SwiftUI app that wants a Pages-style template chooser in minutes |
 
-- **Zero third-party dependencies.** Foundation, URLSession, ImageIO, and pure-Swift gzip/TAR/TOML only.
+- **Zero runtime third-party dependencies.** Foundation, URLSession, ImageIO, and pure-Swift gzip/TAR/TOML only. (The Swift-DocC plugin is build tooling, never linked into products.)
 - **Offline-first.** Stale-while-revalidate catalog sync (ETag / `If-None-Match`); full browsing in Airplane Mode after first sync.
 - **Secure by default.** Tar-slip, symlink, and decompression-bomb guards; HTTPS-only; atomic installs; zero-tracking privacy manifest.
 - **Strict Swift 6.** Sendable value models, actor-isolated caches, `@Observable` UI, zero warnings.
