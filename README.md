@@ -8,9 +8,7 @@
   <a href="https://developer.apple.com/ios/"><img src="https://img.shields.io/badge/iOS-26%2B-blue.svg" alt="iOS 26+" /></a>
   <a href="https://developer.apple.com/macos/"><img src="https://img.shields.io/badge/macOS-26%2B-blue.svg" alt="macOS 26+" /></a>
   <a href="https://developer.apple.com/visionos/"><img src="https://img.shields.io/badge/visionOS-26%2B-blue.svg" alt="visionOS 26+" /></a>
-  <a href="https://swift.org/server/"><img src="https://img.shields.io/badge/Linux-Core-lightgrey.svg" alt="Linux (Core)" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="Apache-2.0" /></a>
-  <a href="https://github.com/VM451/TypstUniverseKit/actions/workflows/ci.yml"><img src="https://github.com/VM451/TypstUniverseKit/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
 </p>
 
 <p align="center">
@@ -68,7 +66,6 @@
 | iOS / iPadOS | 26.0+ |
 | macOS | 26.0+ |
 | visionOS | 26.0+ |
-| Linux | Core module only (server-side indexing/validation) |
 
 > Building from the command line? Use the Xcode toolchain:
 > `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift build`
@@ -210,7 +207,7 @@ For fully custom layouts, compose the primitives directly: `TemplateCardView`, `
 ## How it works
 
 ```
-┌─ TypstUniverseCore (Foundation only, incl. Linux) ──────────────┐
+┌─ TypstUniverseCore (Foundation only, Apple platforms) ──────────┐
 │ Models: SemanticVersion, UniverseCategory (19),                 │
 │   UniverseDiscipline, PackageSpec, UniversePackage,             │
 │   TypstManifest, CuratedCollection, TypstUniverseError          │
@@ -255,11 +252,11 @@ See [SECURITY.md](SECURITY.md) to report a vulnerability, and the DocC article [
 # Full suite (Xcode toolchain required for the SwiftUI target)
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test
 
-# Core only (also runs on Linux)
+# Core only
 swift test --filter TypstUniverseCoreTests
 ```
 
-Coverage: strict SemVer ordering, lenient index decoding (unknown categories, malformed dates/authors), search ranking + facet intersection + compiler filtering, TOML parsing, adversarial tar fixtures (traversal, absolute, symlink, depth, bad gzip), end-to-end scaffolding, and browser ViewModel state transitions. CI runs macOS + Ubuntu (Core), with a nightly live-schema smoke test against `packages.typst.org`.
+Coverage: strict SemVer ordering, lenient index decoding (unknown categories, malformed dates/authors), search ranking + facet intersection + compiler filtering, TOML parsing, adversarial tar fixtures (traversal, absolute, symlink, depth, bad gzip), end-to-end scaffolding, and browser ViewModel state transitions. Verify locally with the Xcode 26 toolchain on macOS.
 
 ## Documentation
 
