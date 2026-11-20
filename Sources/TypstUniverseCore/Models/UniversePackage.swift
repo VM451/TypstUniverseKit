@@ -206,6 +206,13 @@ public struct UniversePackage: Sendable, Hashable, Codable, Identifiable {
     public var latest: SemanticVersion? { latestVersion?.version }
     public var isTemplate: Bool { versions.first(where: { $0.isTemplate }) != nil }
 
+    /// Whether this is one of the templates directly maintained by the Typst
+    /// team (see `CuratedCollection.officialTemplateNames`). Namespace-gated
+    /// to `@preview`, where the team publishes them.
+    public var isOfficialTemplate: Bool {
+        namespace == .preview && CuratedCollection.officialTemplateNames.contains(name)
+    }
+
     public var firstReleasedAt: Date? {
         versions.compactMap(\.releasedAt).min()
     }
