@@ -173,7 +173,12 @@ let files: [String: Data] = try await universe.scaffoldInMemory(spec)
 
 // Curated storefront sections
 let fresh = UniverseSearchEngine().newAndRecentlyUpdated(catalog) // ≤ 30 days
-let cvs = CuratedCollection.presets[0].packages(in: catalog)
+let cvs = CuratedCollection.presets[1].packages(in: catalog)
+
+// Official templates, maintained by the Typst team
+// (github.com/typst/templates, published as @preview packages,
+// so they sync, download, and scaffold through the normal paths)
+let official = CuratedCollection.officialTemplates.packages(in: catalog)
 
 // Point at a private registry or merge @local packages
 let client = TypstUniverseClient.live(configuration: .init(
