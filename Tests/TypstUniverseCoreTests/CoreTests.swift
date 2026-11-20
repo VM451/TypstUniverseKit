@@ -91,6 +91,46 @@ struct SearchTests {
     }
 }
 
+@Suite("OfficialTemplates")
+struct OfficialTemplateTests {
+    private func catalog() -> [UniversePackage] {
+        (["icicle", "charged-ieee", "cetz"] as [String]).map { name in
+            UniversePackage(namespace: .preview, name: name, versions: [
+                PackageVersion(name: name, version: SemanticVersion(0, 1, 0))
+            ])
+        }
+    }
+
+    @Test func presetListsAllEightTeamTemplates() {
+        #expect(CuratedCollection.officialTemplateNames.count == 8)
+        #expect(Set(CuratedCollection.officialTemplateNames) == Set([
+            "appreciated-letter", "badformer", "cereal-words", "charged-ieee",
+            "dashing-dept-news", "icicle", "unequivocal-ams", "wonderous-book"
+        ]))
+        #expect(CuratedCollection.presets.first?.id == "official-templates")
+    }
+
+    @Test func resolvesFromCatalog() {
+        let found = CuratedCollection.officialTemplates.packages(in: catalog())
+        #expect(found.map(\.name).sorted() == ["charged-ieee", "icicle"])
+    }
+
+    @Test func helperIsNamespaceGated() {
+        let official = UniversePackage(namespace: .preview, name: "icicle", versions: [
+            PackageVersion(name: "icicle", version: SemanticVersion(0, 1, 0))
+        ])
+        let community = UniversePackage(namespace: .preview, name: "cetz", versions: [
+            PackageVersion(name: "cetz", version: SemanticVersion(0, 3, 1))
+        ])
+        let localLookalike = UniversePackage(namespace: .local, name: "icicle", versions: [
+            PackageVersion(name: "icicle", version: SemanticVersion(0, 1, 0))
+        ])
+        #expect(official.isOfficialTemplate)
+        #expect(!community.isOfficialTemplate)
+        #expect(!localLookalike.isOfficialTemplate)
+    }
+}
+
 @Suite("TOML")
 struct TomlTests {
     @Test func parsesManifest() throws {
