@@ -18,7 +18,7 @@ DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test
 
 - **Swift 6, zero warnings.** The package builds with `-strict-concurrency=complete`. All public models are `Sendable` value types; shared mutable state lives in actors; UI state is `@Observable` on `@MainActor`.
 - **No `print()` in library code.** Use `KitLog` (`Logger(subsystem: "dev.typstuniversekit", category: …)`).
-- **No third-party dependencies.** Foundation, URLSession, ImageIO, and the in-house gzip/TAR/TOML readers only. Propose any exception in an issue first.
+- **No third-party runtime dependencies.** Foundation, URLSession, ImageIO, and the in-house gzip/TAR/TOML readers only. The Swift-DocC plugin is the sole exception, and it is build tooling only. Propose any other exception in an issue first.
 - **Security-first for archives.** Any change to `SecureTarGzExtractor` must keep the tar-slip, symlink/hardlink, device-node, depth, and size guards, and add a regression test in `Tests/TypstUniverseStorageTests/StorageTests.swift`.
 - **Accessibility is a feature.** New views need VoiceOver labels/hints, Dynamic Type-safe layout (test an Accessibility size), and Reduced Motion / Increased Contrast behavior where animation or color carries meaning.
 
