@@ -58,6 +58,10 @@ public struct TemplateScaffolder: Sendable {
             }
             pkgDir = found
         }
+        // Transitive @preview deps (e.g. benplate -> hydra) must be
+        // cached or the first compile fails on their typst.toml.
+        // Runs on every scaffold so previously cached packages heal.
+        try await TemplateDependencyResolver(cache: cache).ensureInstalledWithDependencies(spec)
         let manifestURL = pkgDir.appending(path: "typst.toml")
         guard fm.fileExists(atPath: manifestURL.path) else { throw TypstUniverseError.manifestMissing(package: spec.name) }
         let text = try String(contentsOf: manifestURL, encoding: .utf8)
@@ -122,6 +126,7 @@ public struct TemplateScaffolder: Sendable {
             pkgDir = last
         }
         let fm = FileManager.default
+        try await TemplateDependencyResolver(cache: cache).ensureInstalledWithDependencies(spec)
         let text = try String(contentsOf: pkgDir.appending(path: "typst.toml"), encoding: .utf8)
         let manifest = try TypstTomlParser.parseManifest(text, package: spec.name)
         guard let template = manifest.template else { throw TypstUniverseError.templateNotFound(package: spec.name) }

@@ -8,6 +8,8 @@ All notable changes to TypstUniverseKit are documented here. The format follows
 
 ### Fixed
 
+- Scaffolding installs transitive `@preview` dependencies: `TemplateScaffolder` now resolves imports across the whole package (`TemplateDependencyResolver`), so scaffolded templates compile on first open instead of failing with `file not found (searched at typst.toml)` for missing transitive packages (e.g. benplate → hydra, drafting). Previously cached packages self-heal on next scaffold; offline with a warm cache keeps working, and an unreachable registry now fails fast naming the missing package.
+
 - Declares the Swift-DocC plugin (build tooling only, never linked) so `generate-documentation` works for the DocC catalogs.
 
 ### Removed

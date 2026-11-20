@@ -129,3 +129,115 @@ struct ScaffolderTests {
         try? FileManager.default.removeItem(at: root)
     }
 }
+
+private struct FailingRegistry: TypstRegistryProvider, Sendable {
+    let id = "failing-test"
+    func fetchIndex(etag: String?) async throws -> (packages: [UniversePackage]?, etag: String?) {
+        throw TypstUniverseError.offline
+    }
+    func archiveURL(for spec: PackageSpec) -> URL {
+        URL(fileURLWithPath: "/nonexistent-\(spec.name).tar.gz")
+    }
+    func thumbnailURL(for spec: PackageSpec, full: Bool) -> URL? { nil }
+}
+
+private func seedPackage(
+    root: URL,
+    namespace: String = "preview",
+    name: String,
+    version: String,
+    files: [String: String]
+) throws {
+    let fm = FileManager.default
+    let dir = root.appending(path: "\(namespace)/\(name)/\(version)", directoryHint: .isDirectory)
+    try fm.createDirectory(at: dir, withIntermediateDirectories: true)
+    try "[package]\nname = \"\(name)\"\nversion = \"\(version)\"\nentrypoint = \"lib.typ\"\n"
+        .write(to: dir.appending(path: "typst.toml"), atomically: true, encoding: .utf8)
+    for (rel, text) in files {
+        let url = dir.appending(path: rel)
+        try fm.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try text.write(to: url, atomically: true, encoding: .utf8)
+    }
+}
+
+private func makeSpec(_ string: String) -> PackageSpec {
+    guard let spec = PackageSpec(string) else { fatalError("bad spec fixture: \(string)") }
+    return spec
+}
+
+@Suite("TemplateDependencies")
+struct TemplateDependencyTests {
+    @Test func scannerFindsExactImports() {
+        let src = """
+        #import "@preview/hydra:0.6.3": hydra
+        #import "@preview/drafting:0.2.2": *
+        #import "@preview/hydra:0.6.3": hydra
+        """
+        let found = TemplateDependencyResolver.referencedPackages(in: src).map(\.description)
+        #expect(found == ["@preview/hydra:0.6.3", "@preview/drafting:0.2.2"])
+    }
+
+    @Test func scannerSkipsLocalPartialAndGarbage() {
+        let src = """
+        // contact ops@example.com about @preview/notreal
+        #import "@local/mine:1.0.0": *
+        #import "@preview/partial:1.2": *
+        #import "relative.typ": *
+        #import "@preview/no-version": *
+        #import "@preview/good:2.0.0": *
+        """
+        let found = TemplateDependencyResolver.referencedPackages(in: src).map(\.description)
+        #expect(found == ["@preview/good:2.0.0"])
+    }
+
+    @Test func installedClosureNeedsNoNetwork() async throws {
+        let root = FileManager.default.temporaryDirectory.appending(path: "tusk-deps-\(UUID().uuidString)", directoryHint: .isDirectory)
+        defer { try? FileManager.default.removeItem(at: root) }
+        try seedPackage(root: root, name: "demo", version: "1.0.0", files: [
+            "lib.typ": "#import \"@preview/hydra:0.6.3\": hydra\n#let x = 1\n",
+        ])
+        try seedPackage(root: root, name: "hydra", version: "0.6.3", files: [
+            "lib.typ": "#let hydra = 1\n",
+        ])
+        let cache = PackageCacheManager(config: .init(storageRoot: root), registry: FailingRegistry())
+        let resolver = TemplateDependencyResolver(cache: cache)
+        let ensured = try await resolver.ensureInstalledWithDependencies(makeSpec("@preview/demo:1.0.0"))
+        #expect(ensured.map(\.description) == ["@preview/demo:1.0.0", "@preview/hydra:0.6.3"])
+    }
+
+    @Test func missingDependencyFailsFastWithoutNetwork() async {
+        let root = FileManager.default.temporaryDirectory.appending(path: "tusk-deps-\(UUID().uuidString)", directoryHint: .isDirectory)
+        defer { try? FileManager.default.removeItem(at: root) }
+        try? seedPackage(root: root, name: "demo", version: "1.0.0", files: [
+            "lib.typ": "#import \"@preview/gone:9.9.9\": *\n",
+        ])
+        let cache = PackageCacheManager(config: .init(storageRoot: root), registry: FailingRegistry())
+        let resolver = TemplateDependencyResolver(cache: cache)
+        await #expect(throws: TypstUniverseError.self) {
+            try await resolver.ensureInstalledWithDependencies(makeSpec("@preview/demo:1.0.0"))
+        }
+    }
+
+    @Test func cyclesTerminate() async throws {
+        let root = FileManager.default.temporaryDirectory.appending(path: "tusk-deps-\(UUID().uuidString)", directoryHint: .isDirectory)
+        defer { try? FileManager.default.removeItem(at: root) }
+        try seedPackage(root: root, name: "a", version: "1.0.0", files: ["lib.typ": "#import \"@preview/b:1.0.0\": *\n"])
+        try seedPackage(root: root, name: "b", version: "1.0.0", files: ["lib.typ": "#import \"@preview/a:1.0.0\": *\n"])
+        let cache = PackageCacheManager(config: .init(storageRoot: root), registry: FailingRegistry())
+        let resolver = TemplateDependencyResolver(cache: cache)
+        let ensured = try await resolver.ensureInstalledWithDependencies(makeSpec("@preview/a:1.0.0"))
+        #expect(Set(ensured.map(\.description)) == ["@preview/a:1.0.0", "@preview/b:1.0.0"])
+    }
+
+    @Test func depthCapStopsDeepChains() async throws {
+        let root = FileManager.default.temporaryDirectory.appending(path: "tusk-deps-\(UUID().uuidString)", directoryHint: .isDirectory)
+        defer { try? FileManager.default.removeItem(at: root) }
+        try seedPackage(root: root, name: "a", version: "1.0.0", files: ["lib.typ": "#import \"@preview/b:1.0.0\": *\n"])
+        try seedPackage(root: root, name: "b", version: "1.0.0", files: ["lib.typ": "#import \"@preview/c:1.0.0\": *\n"])
+        try seedPackage(root: root, name: "c", version: "1.0.0", files: ["lib.typ": "#let c = 1\n"])
+        let cache = PackageCacheManager(config: .init(storageRoot: root), registry: FailingRegistry())
+        let resolver = TemplateDependencyResolver(cache: cache)
+        let ensured = try await resolver.ensureInstalledWithDependencies(makeSpec("@preview/a:1.0.0"), maxDepth: 1)
+        #expect(Set(ensured.map(\.description)) == ["@preview/a:1.0.0", "@preview/b:1.0.0"])
+    }
+}
