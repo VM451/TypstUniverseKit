@@ -6,6 +6,10 @@ All notable changes to TypstUniverseKit are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Official Typst team templates ([typst/templates](https://github.com/typst/templates)) as a first-class storefront: `CuratedCollection.officialTemplates` preset (featured first in `presets`), `UniversePackage.isOfficialTemplate` provenance helper, and an "Official" badge on `TemplateCardView`. No new networking or vendored files — all eight are `@preview` Universe packages, so sync, download, and scaffolding reuse the existing paths.
+
 ### Changed
 
 - Deployment floor raised to the OS 27 generation: iOS / iPadOS 27+, macOS 27+, visionOS 27+. Requires Swift 6.4+ and Xcode 27+ (`swift-tools-version: 6.4`). No API changes.
