@@ -1,12 +1,12 @@
-// swift-tools-version: 6.4
+// swift-tools-version: 6.2
 import PackageDescription
 
 let package = Package(
     name: "TypstUniverseKit",
     platforms: [
-        .iOS(.v27),
-        .macOS(.v27),
-        .visionOS(.v27)
+        .iOS(.v26),
+        .macOS(.v26),
+        .visionOS(.v26)
     ],
     products: [
         .library(name: "TypstUniverseCore", targets: ["TypstUniverseCore"]),
