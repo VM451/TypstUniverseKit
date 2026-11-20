@@ -28,6 +28,12 @@ public struct TemplateCardView: View {
                 if package.isTemplate {
                     Text("Template").font(.caption).foregroundStyle(.secondary)
                 }
+                if package.isOfficialTemplate {
+                    Text("Official")
+                        .font(.caption.bold())
+                        .foregroundStyle(.red)
+                        .accessibilityLabel("Official Typst team template")
+                }
             }
         }
         .padding(10)
