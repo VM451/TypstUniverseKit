@@ -1,9 +1,9 @@
-// swift-tools-version: 6.4
+// swift-tools-version: 6.2
 import PackageDescription
 
 let package = Package(
     name: "UniverseExplorerApp",
-    platforms: [.macOS(.v27), .iOS(.v27), .visionOS(.v27)],
+    platforms: [.macOS(.v26), .iOS(.v26), .visionOS(.v26)],
     dependencies: [.package(path: "../..")],
     targets: [.executableTarget(name: "UniverseExplorerApp", dependencies: [
         .product(name: "TypstUniverseCore", package: "TypstUniverseKit"),
