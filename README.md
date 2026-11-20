@@ -5,9 +5,9 @@
 <p align="center">
   <a href="https://swift.org"><img src="https://img.shields.io/badge/Swift-6.0-orange.svg" alt="Swift 6.0" /></a>
   <a href="https://swift.org/package-manager/"><img src="https://img.shields.io/badge/SPM-compatible-brightgreen.svg" alt="SPM compatible" /></a>
-  <a href="https://developer.apple.com/ios/"><img src="https://img.shields.io/badge/iOS-17%2B-blue.svg" alt="iOS 17+" /></a>
-  <a href="https://developer.apple.com/macos/"><img src="https://img.shields.io/badge/macOS-14%2B-blue.svg" alt="macOS 14+" /></a>
-  <a href="https://developer.apple.com/visionos/"><img src="https://img.shields.io/badge/visionOS-1%2B-blue.svg" alt="visionOS 1+" /></a>
+  <a href="https://developer.apple.com/ios/"><img src="https://img.shields.io/badge/iOS-27%2B-blue.svg" alt="iOS 27+" /></a>
+  <a href="https://developer.apple.com/macos/"><img src="https://img.shields.io/badge/macOS-27%2B-blue.svg" alt="macOS 27+" /></a>
+  <a href="https://developer.apple.com/visionos/"><img src="https://img.shields.io/badge/visionOS-27%2B-blue.svg" alt="visionOS 27+" /></a>
   <a href="https://swift.org/server/"><img src="https://img.shields.io/badge/Linux-Core-lightgrey.svg" alt="Linux (Core)" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="Apache-2.0" /></a>
   <a href="https://github.com/VM451/TypstUniverseKit/actions/workflows/ci.yml"><img src="https://github.com/VM451/TypstUniverseKit/actions/workflows/ci.yml/badge.svg" alt="CI" /></a>
@@ -63,11 +63,11 @@
 
 | | Minimum |
 |---|---|
-| Swift | 6.0 (strict concurrency, `-strict-concurrency=complete`) |
-| Xcode | 16+ (SwiftUI macros require the Xcode toolchain, not CLT alone) |
-| iOS / iPadOS | 17.0+ |
-| macOS | 14.0+ |
-| visionOS | 1.0+ |
+| Swift | 6.4+ (strict concurrency, `-strict-concurrency=complete`) |
+| Xcode | 27+ (SwiftUI macros require the Xcode toolchain, not CLT alone) |
+| iOS / iPadOS | 27.0+ |
+| macOS | 27.0+ |
+| visionOS | 27.0+ |
 | Linux | Core module only (server-side indexing/validation) |
 
 > Building from the command line? Use the Xcode toolchain:
@@ -222,7 +222,7 @@ For fully custom layouts, compose the primitives directly: `TemplateCardView`, `
 │ LocalNamespaceScanner (@local merge) · TypstUniverseClient      │
 └──────────────────────────────┬──────────────────────────────────┘
                                │ depends on
-┌─ TypstUniverseUI (SwiftUI, iOS 17+/macOS 14+/visionOS 1+) ──────┐
+┌─ TypstUniverseUI (SwiftUI, iOS/macOS/visionOS 27+) ─────────────┐
 │ UniverseBrowserModel (@Observable state machine)               │
 │ ThumbnailPipeline (NSCache + disk, ImageIO WebP off-main)       │
 │ TypstUniverseBrowserView · TemplatePickerSheet                 │
