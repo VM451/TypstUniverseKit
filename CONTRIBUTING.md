@@ -4,7 +4,7 @@ Thanks for helping! This guide keeps contributions fast to review and safe to sh
 
 ## Toolchain
 
-- **Xcode 26+ is required** for `TypstUniverseUI` and the full test suite — the SwiftUI and Swift Testing macros need Xcode's plugin toolchain. The Command-Line Tools toolchain alone cannot compile `@State`, `@Bindable`, or `@Test` macros.
+- **Xcode 27+ is required** for `TypstUniverseUI` and the full test suite — the SwiftUI and Swift Testing macros need Xcode's plugin toolchain. The Command-Line Tools toolchain alone cannot compile `@State`, `@Bindable`, or `@Test` macros.
 - Build and test with the Xcode toolchain:
 
 ```bash
