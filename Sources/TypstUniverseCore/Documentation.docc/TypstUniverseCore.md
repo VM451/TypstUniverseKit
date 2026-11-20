@@ -1,6 +1,6 @@
 # ``TypstUniverseCore``
 
-Pure-Swift, Foundation-only models, registry client, search engine, and `typst.toml` parser. Runs on Apple platforms and Linux.
+Pure-Swift, Foundation-only models, registry client, search engine, and `typst.toml` parser for Apple platforms.
 
 ## Topics
 
