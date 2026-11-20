@@ -8,15 +8,15 @@ All notable changes to TypstUniverseKit are documented here. The format follows
 
 ### Fixed
 
-- CI now pins Swift 6.2 via `swift-actions/setup-swift` on every job (matching `swift-tools-version: 6.2`) and declares the Swift-DocC plugin so the docs job's `generate-documentation` command exists.
+- CI now pins Swift 6.4 via `swift-actions/setup-swift` on every job (matching `swift-tools-version: 6.4`) and declares the Swift-DocC plugin so the docs job's `generate-documentation` command exists.
 
 ### Removed
 
-- Linux as a supported platform: the `core-linux` CI job is gone, along with Linux mentions in the README and DocC catalog. Apple platforms only (iOS / macOS / visionOS 26+).
+- Linux as a supported platform: the `core-linux` CI job is gone, along with Linux mentions in the README and DocC catalog. Apple platforms only (iOS / macOS / visionOS 27+).
 
 ### Changed
 
-- Deployment floor is the OS 26 generation: iOS / iPadOS 26+, macOS 26+, visionOS 26+. Requires Swift 6.2+ and Xcode 26+ (`swift-tools-version: 6.2`). OS 27 follows as soon as a public Swift/Xcode toolchain ships it — today only future/beta toolchains know `.v27`, and CI must stay green on what GitHub runners can actually install. No API changes.
+- Deployment floor is the OS 27 generation: iOS / iPadOS 27+, macOS 27+, visionOS 27+. Requires Swift 6.4+ and Xcode 27+ (`swift-tools-version: 6.4`; `.v27` was introduced in PackageDescription 6.4). No API changes.
 
 ### Added
 
