@@ -8,11 +8,12 @@ All notable changes to TypstUniverseKit are documented here. The format follows
 
 ### Fixed
 
-- CI now pins Swift 6.4 via `swift-actions/setup-swift` on every job (matching `swift-tools-version: 6.4`) and declares the Swift-DocC plugin so the docs job's `generate-documentation` command exists.
+- Declares the Swift-DocC plugin (build tooling only, never linked) so `generate-documentation` works for the DocC catalogs.
 
 ### Removed
 
 - Linux as a supported platform: the `core-linux` CI job is gone, along with Linux mentions in the README and DocC catalog. Apple platforms only (iOS / macOS / visionOS 27+).
+- GitHub Actions CI (`.github/workflows/ci.yml`): the workflow is removed. Verify locally with the Xcode 27 toolchain (`DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift build` / `swift test`).
 
 ### Changed
 
