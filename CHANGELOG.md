@@ -8,7 +8,11 @@ All notable changes to TypstUniverseKit are documented here. The format follows
 
 ### Fixed
 
-- CI now pins Swift 6.2 via `swift-actions/setup-swift` on every job (matching `swift-tools-version: 6.2`), pins Linux to `ubuntu-24.04`, and declares the Swift-DocC plugin so the docs job's `generate-documentation` command exists.
+- CI now pins Swift 6.2 via `swift-actions/setup-swift` on every job (matching `swift-tools-version: 6.2`) and declares the Swift-DocC plugin so the docs job's `generate-documentation` command exists.
+
+### Removed
+
+- Linux as a supported platform: the `core-linux` CI job is gone, along with Linux mentions in the README and DocC catalog. Apple platforms only (iOS / macOS / visionOS 26+).
 
 ### Changed
 
