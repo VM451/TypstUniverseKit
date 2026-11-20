@@ -26,4 +26,5 @@ Exact package-name matches outrank prefixes, which outrank keyword hits, then de
 
 - `newAndRecentlyUpdated(_:withinDays:now:)` — created or updated within the window (default 30 days), newest first.
 - `categoryCounts(_:)` — live per-category counts for sidebar badges.
-- `CuratedCollection.presets` — Resumes, Presentations, Academic Papers, Visualizations; `packages(in:)` resolves them against any catalog.
+- `CuratedCollection.presets` — Official Templates plus Resumes, Presentations, Academic Papers, Visualizations; `packages(in:)` resolves them against any catalog.
+- `CuratedCollection.officialTemplates` — the eight templates directly maintained by the Typst team ([typst/templates](https://github.com/typst/templates)), published as `@preview` packages. They need no special handling: catalog sync, download, and scaffolding all work through the normal paths, and `UniversePackage.isOfficialTemplate` flags them for UI badges.
