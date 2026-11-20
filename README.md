@@ -5,9 +5,9 @@
 <p align="center">
   <a href="https://swift.org"><img src="https://img.shields.io/badge/Swift-6.0-orange.svg" alt="Swift 6.0" /></a>
   <a href="https://swift.org/package-manager/"><img src="https://img.shields.io/badge/SPM-compatible-brightgreen.svg" alt="SPM compatible" /></a>
-  <a href="https://developer.apple.com/ios/"><img src="https://img.shields.io/badge/iOS-26%2B-blue.svg" alt="iOS 26+" /></a>
-  <a href="https://developer.apple.com/macos/"><img src="https://img.shields.io/badge/macOS-26%2B-blue.svg" alt="macOS 26+" /></a>
-  <a href="https://developer.apple.com/visionos/"><img src="https://img.shields.io/badge/visionOS-26%2B-blue.svg" alt="visionOS 26+" /></a>
+  <a href="https://developer.apple.com/ios/"><img src="https://img.shields.io/badge/iOS-27%2B-blue.svg" alt="iOS 27+" /></a>
+  <a href="https://developer.apple.com/macos/"><img src="https://img.shields.io/badge/macOS-27%2B-blue.svg" alt="macOS 27+" /></a>
+  <a href="https://developer.apple.com/visionos/"><img src="https://img.shields.io/badge/visionOS-27%2B-blue.svg" alt="visionOS 27+" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" alt="Apache-2.0" /></a>
 </p>
 
@@ -61,11 +61,11 @@
 
 | | Minimum |
 |---|---|
-| Swift | 6.2+ (strict concurrency, `-strict-concurrency=complete`) |
-| Xcode | 26+ (SwiftUI macros require the Xcode toolchain, not CLT alone) |
-| iOS / iPadOS | 26.0+ |
-| macOS | 26.0+ |
-| visionOS | 26.0+ |
+| Swift | 6.4+ (strict concurrency, `-strict-concurrency=complete`) |
+| Xcode | 27+ (SwiftUI macros require the Xcode toolchain, not CLT alone) |
+| iOS / iPadOS | 27.0+ |
+| macOS | 27.0+ |
+| visionOS | 27.0+ |
 
 > Building from the command line? Use the Xcode toolchain:
 > `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift build`
@@ -224,7 +224,7 @@ For fully custom layouts, compose the primitives directly: `TemplateCardView`, `
 │ LocalNamespaceScanner (@local merge) · TypstUniverseClient      │
 └──────────────────────────────┬──────────────────────────────────┘
                                │ depends on
-┌─ TypstUniverseUI (SwiftUI, iOS/macOS/visionOS 26+) ─────────────┐
+┌─ TypstUniverseUI (SwiftUI, iOS/macOS/visionOS 27+) ─────────────┐
 │ UniverseBrowserModel (@Observable state machine)               │
 │ ThumbnailPipeline (NSCache + disk, ImageIO WebP off-main)       │
 │ TypstUniverseBrowserView · TemplatePickerSheet                 │
@@ -256,7 +256,7 @@ DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer swift test
 swift test --filter TypstUniverseCoreTests
 ```
 
-Coverage: strict SemVer ordering, lenient index decoding (unknown categories, malformed dates/authors), search ranking + facet intersection + compiler filtering, TOML parsing, adversarial tar fixtures (traversal, absolute, symlink, depth, bad gzip), end-to-end scaffolding, and browser ViewModel state transitions. Verify locally with the Xcode 26 toolchain on macOS.
+Coverage: strict SemVer ordering, lenient index decoding (unknown categories, malformed dates/authors), search ranking + facet intersection + compiler filtering, TOML parsing, adversarial tar fixtures (traversal, absolute, symlink, depth, bad gzip), end-to-end scaffolding, and browser ViewModel state transitions. Verify locally with the Xcode 27 toolchain on macOS.
 
 ## Documentation
 
