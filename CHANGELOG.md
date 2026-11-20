@@ -6,6 +6,10 @@ All notable changes to TypstUniverseKit are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Deployment floor raised to the OS 27 generation: iOS / iPadOS 27+, macOS 27+, visionOS 27+. Requires Swift 6.4+ and Xcode 27+ (`swift-tools-version: 6.4`). No API changes.
+
 ## [1.0.0] — 2026-11-20 (Draft for Architecture Review)
 
 ### Added
