@@ -6,6 +6,10 @@ All notable changes to TypstUniverseKit are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- CI now pins Swift 6.4 via `swift-actions/setup-swift` on every job (matching `swift-tools-version: 6.4`), pins Linux to `ubuntu-24.04`, and declares the Swift-DocC plugin so the docs job's `generate-documentation` command exists.
+
 ### Added
 
 - Official Typst team templates ([typst/templates](https://github.com/typst/templates)) as a first-class storefront: `CuratedCollection.officialTemplates` preset (featured first in `presets`), `UniversePackage.isOfficialTemplate` provenance helper, and an "Official" badge on `TemplateCardView`. No new networking or vendored files — all eight are `@preview` Universe packages, so sync, download, and scaffolding reuse the existing paths.
