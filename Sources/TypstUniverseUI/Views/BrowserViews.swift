@@ -169,7 +169,14 @@ public struct TemplatePickerSheet: View {
     }
 
     private func useSelected() async {
-        guard let pkg = model.selected, let version = model.selectedVersion ?? pkg.latestVersion else { return }
+        guard let pkg = model.selected else { return }
+        // Prefer a version that actually ships the `[template]` starter:
+        // the selected/latest release may have dropped it (touying ≥ 0.6.2),
+        // which would fail scaffolding with templateNotFound.
+        guard let version = model.selectedVersion.flatMap({ $0.isTemplate ? $0 : nil })
+            ?? pkg.newestTemplateVersion
+            ?? model.selectedVersion
+            ?? pkg.latestVersion else { return }
         let spec = PackageSpec(namespace: pkg.namespace, name: pkg.name, version: version.version)
         isWorking = true
         defer { isWorking = false }

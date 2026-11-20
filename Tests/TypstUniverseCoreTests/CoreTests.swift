@@ -170,3 +170,47 @@ struct SnippetTests {
         #expect(pkg.initCommand() == "typst init @preview/cetz:0.3.1")
     }
 }
+
+@Suite("TemplateVersions")
+struct TemplateVersionTests {
+    private func template(_ version: SemanticVersion) -> PackageVersion {
+        PackageVersion(
+            name: "touying", version: version,
+            template: TemplateInfo(path: "template", entrypoint: "main.typ", thumbnail: "thumbnail.png")
+        )
+    }
+
+    @Test func newestTemplateVersionSkipsTemplateLessReleases() {
+        // Mirrors touying: the starter was dropped in newer releases.
+        let pkg = UniversePackage(namespace: .preview, name: "touying", versions: [
+            template(SemanticVersion(0, 3, 2)),
+            PackageVersion(name: "touying", version: SemanticVersion(0, 8, 0)),
+        ])
+        #expect(pkg.isTemplate)
+        #expect(pkg.latestVersion?.version == SemanticVersion(0, 8, 0))
+        #expect(pkg.newestTemplateVersion?.version == SemanticVersion(0, 3, 2))
+    }
+
+    @Test func packageWithoutAnyTemplateHasNoTemplateVersion() {
+        let pkg = UniversePackage(namespace: .preview, name: "cetz", versions: [
+            PackageVersion(name: "cetz", version: SemanticVersion(0, 3, 1))
+        ])
+        #expect(!pkg.isTemplate)
+        #expect(pkg.newestTemplateVersion == nil)
+    }
+
+    @Test func templateOnlyPresetsResolveToTemplateShippers() {
+        // Every template-lane preset name must resolve to a package whose
+        // newest template-having release exists; pure libraries (polylux,
+        // cetz, fletcher) and missing names (diapo, ieee, acm, springer,
+        // resume, plot) must never appear here.
+        let banned: Set<String> = ["polylux", "touying", "diapo", "ieee", "acm", "springer", "cetz", "fletcher", "plot", "resume"]
+        for preset in CuratedCollection.presets where preset.id != "official-templates" {
+            for name in preset.packageNames {
+                #expect(!banned.contains(name), "preset \(preset.id) names package-only/missing entry \(name)")
+            }
+        }
+        let presented = Set(CuratedCollection.presets.flatMap(\.packageNames))
+        #expect(presented.isSuperset(of: ["diatypst", "slydekit", "typslides", "altacv", "timble", "manifesto", "electify", "econ-working-paper"]))
+    }
+}

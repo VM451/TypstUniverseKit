@@ -33,12 +33,18 @@ public struct CuratedCollection: Sendable, Hashable, Codable, Identifiable {
         packageNames: officialTemplateNames
     )
 
+    /// Template-lane presets: every name below resolves to a package whose
+    /// LATEST release ships a `[template]` starter (verified 2026-11-20
+    /// against the live Universe index). Pure libraries (polylux, cetz,
+    /// fletcher) and names absent from the index (diapo, ieee, acm,
+    /// springer, resume, plot) must never appear here — a template preset
+    /// showing a package-only entry confuses users about what to do next.
     public static let presets: [CuratedCollection] = [
         officialTemplates,
-        CuratedCollection(id: "resumes", title: "Resumes & CVs", packageNames: ["basic-resume", "modern-cv", "resume"]),
-        CuratedCollection(id: "presentations", title: "Presentations", packageNames: ["polylux", "touying", "diapo"]),
-        CuratedCollection(id: "papers", title: "Academic Papers", packageNames: ["ieee", "acm", "springer"]),
-        CuratedCollection(id: "visualizations", title: "Visualizations", packageNames: ["cetz", "fletcher", "plot"])
+        CuratedCollection(id: "resumes", title: "Resumes & CVs", packageNames: ["basic-resume", "modern-cv", "altacv"]),
+        CuratedCollection(id: "presentations", title: "Presentations", packageNames: ["diatypst", "slydekit", "typslides"]),
+        CuratedCollection(id: "papers", title: "Academic Papers", packageNames: ["charged-ieee", "unequivocal-ams", "econ-working-paper"]),
+        CuratedCollection(id: "visualizations", title: "Visualizations", packageNames: ["timble", "manifesto", "electify"])
     ]
 
     public func packages(in catalog: [UniversePackage]) -> [UniversePackage] {

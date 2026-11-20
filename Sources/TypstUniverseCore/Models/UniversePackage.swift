@@ -204,7 +204,14 @@ public struct UniversePackage: Sendable, Hashable, Codable, Identifiable {
     public var id: String { "\(namespace.rawValue)/\(name)" }
     public var latestVersion: PackageVersion? { versions.first }
     public var latest: SemanticVersion? { latestVersion?.version }
-    public var isTemplate: Bool { versions.first(where: { $0.isTemplate }) != nil }
+    public var isTemplate: Bool { newestTemplateVersion != nil }
+
+    /// Newest release (by semver) that actually ships a `[template]`
+    /// starter. `latestVersion` can be template-less when a maintainer
+    /// drops the starter in a newer release (e.g. touying ≥ 0.6.2), so
+    /// `typst init` and template previews must use this, not `latest`.
+    /// `versions` is stored newest-first, so the first template hit wins.
+    public var newestTemplateVersion: PackageVersion? { versions.first(where: { $0.isTemplate }) }
 
     /// Whether this is one of the templates directly maintained by the Typst
     /// team (see `CuratedCollection.officialTemplateNames`). Namespace-gated
